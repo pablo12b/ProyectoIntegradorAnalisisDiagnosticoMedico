@@ -145,7 +145,9 @@ Este software fue desarrollado como parte del **Proyecto Integrador de Intercicl
 * **Domenika Delgado**
 
 **Institución:** Universidad Politécnica Salesiana
+
 **Docente:** Ing. Vladimir Robles Bykbaev
+
 **Período Lectivo:** Octubre 2025 – Febrero 2026
 
 ### Reconocimientos y Datasets
