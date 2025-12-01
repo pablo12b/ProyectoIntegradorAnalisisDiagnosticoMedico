@@ -132,11 +132,9 @@ MediVision-Integrador/
 │   ├── main.cpp            # Motor de GUI y gestión de eventos Mouse.
 │   ├── DicomHandler.cpp    # Lectura de datos crudos mediante ITK.
 │   └── ImageProcessor.cpp  # Algoritmos (CLAHE, DNN, Morfología, Canny).
-├── include/
-│   ├── DicomHandler.h      # Cabecera: Clase de carga DICOM.
-│   └── ImageProcessor.h    # Cabecera: Clase de procesamiento.
-└── models/
-    └── dncnn_model.onnx    # (Opcional) Modelo de Red Neuronal.
+└── include/
+    ├── DicomHandler.h      # Cabecera: Clase de carga DICOM.
+    └── ImageProcessor.h    # Cabecera: Clase de procesamiento.
 ```
 ## 👨‍💻 Autores y Créditos
 
