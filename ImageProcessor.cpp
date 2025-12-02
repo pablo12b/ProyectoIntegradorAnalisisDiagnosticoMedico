@@ -98,6 +98,33 @@ cv::Mat ImageProcessor::aplicarContrastStretching(cv::Mat entrada) {
     return salida;
 }
 
+// En ImageProcessor.cpp
+
+cv::Mat ImageProcessor::aplicarApertura(cv::Mat mascara) {
+    cv::Mat salida;
+    // Creamos un elemento estructurante de 3x3 (Rectangular o Elíptico)
+    // MORPH_ELLIPSE es mejor para formas biológicas que MORPH_RECT
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(4, 4));
+    
+    // Aplicamos APERTURA (Erosión -> Dilatación)
+    // Esto elimina los puntos blancos pequeños (ruido)
+    cv::morphologyEx(mascara, salida, cv::MORPH_OPEN, kernel);
+    
+    return salida;
+}
+
+cv::Mat ImageProcessor::aplicarGradienteMorfologico(cv::Mat mascara) {
+    cv::Mat salida;
+    // Un kernel de 3x3 es estándar para bordes finos
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+    
+    // El gradiente resta la versión "gorda" (dilatada) menos la "flaca" (erosionada)
+    // El resultado es el borde.
+    cv::morphologyEx(mascara, salida, cv::MORPH_GRADIENT, kernel);
+    
+    return salida;
+}
+
 // --- CUMPLE: Almacenamiento en carpeta ---
 #include <sys/stat.h> // Para crear carpeta (en Linux/Mac)
 

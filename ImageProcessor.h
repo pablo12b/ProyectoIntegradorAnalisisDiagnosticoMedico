@@ -9,8 +9,6 @@ class ImageProcessor {
 public:
     void cargarRedNeuronal(const std::string& rutaModelo);
 
-    // --- TÉCNICAS OBLIGATORIAS DE LA RÚBRICA ---
-    
     // 1. Ecualización de Histograma (Estándar vs CLAHE - Técnica Nueva)
     cv::Mat mejorarContraste(cv::Mat entrada, bool usarCLAHE);
 
@@ -27,6 +25,12 @@ public:
 
     // Auxiliar: Overlay para visualización
     cv::Mat crearOverlay(cv::Mat original, cv::Mat mascara, cv::Scalar color);
+
+    // Agregar en public:
+    cv::Mat aplicarGradienteMorfologico(cv::Mat mascara);
+    
+    // En ImageProcessor.h (dentro de public:)
+    cv::Mat aplicarApertura(cv::Mat mascara); // Para quitar ruido
 
     // CUMPLE: Contrast Stretching (Estiramiento de contraste lineal)
     cv::Mat aplicarContrastStretching(cv::Mat entrada);

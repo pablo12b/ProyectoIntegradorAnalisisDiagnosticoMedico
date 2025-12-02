@@ -215,16 +215,47 @@ int main(int argc, char** argv) {
         imgProc = proc.mejorarContraste(imgProc, app.usarCLAHE);
         imgProc = proc.aplicarReduccionRuido(imgProc, app.usarDNN);
 
-        Mat mask; Scalar col(0,255,255);
-        switch(app.sliderModo) {
-            case 0: inRange(imgProc, Scalar(50), Scalar(200), mask); break;
-            case 1: mask = proc.segmentarHueso(imgProc); col=Scalar(0,0,255); break;
-            case 2: threshold(imgProc, mask, 60, 255, THRESH_BINARY_INV); col=Scalar(255,0,0); break;
-            case 3: mask = proc.segmentarTejidoBlando(imgProc); col=Scalar(0,255,0); break;
+        // ... dentro del while(true) ...
+
+        Mat mask;
+        Scalar col = Scalar(0,255,255);
+
+        // 1. OBTENCIÓN DE MÁSCARA CRUDA (Sin limpiar)
+        switch (app.sliderModo) {
+            case 0: // Manual
+                inRange(imgProc, Scalar(50), Scalar(200), mask); 
+                break;
+            case 1: // Hueso (Usa lógica interna de Cierre porque el hueso tiene huecos)
+                mask = proc.segmentarHueso(imgProc); 
+                col = Scalar(0,0,255); 
+                break;
+            case 2: // Pulmon (Suele tener mucho ruido)
+                threshold(imgProc, mask, 60, 255, THRESH_BINARY_INV); 
+                col = Scalar(255,0,0); 
+                break;
+            case 3: // Tejido (Suele tener ruido)
+                mask = proc.segmentarTejidoBlando(imgProc); 
+                col = Scalar(0,255,0); 
+                break;
+        }
+
+        // 2. APLICACIÓN DE MORFOLOGÍA (OPENING) PARA REDUCIR RUIDO
+        // Solo si el botón "MORFOLOGIA" está activo
+        if (app.usarMorf) {
+            // El hueso (Caso 1) necesita "Cierre" (rellenar huecos), que ya está en su función.
+            // Pero Pulmón (2) y Tejido (3) necesitan "Apertura" para quitar ruido externo.
+            if (app.sliderModo == 2 || app.sliderModo == 3 || app.sliderModo == 0) {
+                mask = proc.aplicarApertura(mask);
+            }
         }
         
         if(!app.usarMorf && app.sliderModo!=0) { /* Ensucia mascara para demo */ threshold(imgProc, mask, 150, 255, THRESH_BINARY); }
-        if(app.verBordes) { Mat b = proc.detectarBordes(imgProc, 50, 150); bitwise_and(b, mask, mask); }
+        if(app.verBordes) {
+            Mat b = proc.detectarBordes(imgProc, 50, 150);
+            bitwise_and(b, mask, mask);
+            Mat bordesMorfologicos = proc.aplicarGradienteMorfologico(mask);
+            cv::max(mask, bordesMorfologicos, mask);
+        }
 
         imgFinal = proc.crearOverlay(imgProc, mask, col);
 
